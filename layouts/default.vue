@@ -1,55 +1,66 @@
 <template>
   <v-app dark>
     <v-app-bar
+      color="primary"
       fixed
       app
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
-        <v-icon>mdi-{{ `chevron-${miniVariant ? 'right' : 'left'}` }}</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>mdi-application</v-icon>
-      </v-btn>
-      <v-toolbar-title v-text="'Harper Family Cook book'" />
+      <v-toolbar-title class="white--text" v-text="'Harper Family Cook book'" />
       <v-spacer />
+
+      <!-- <v-autocomplete
+        v-model="search"
+        :search-input.sync="search"
+        color="white"
+        hide-no-data
+        hide-selected
+        item-text="Description"
+        item-value="API"
+        label="Public APIs"
+        placeholder="Search recipes"
+        prepend-icon="mdi-search"
+        return-object
+      ></v-autocomplete> -->
+
       <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
+        v-if="!$store.state.auth"
+        color="accent"
+        to="/login"
       >
-        <v-icon>mdi-menu</v-icon>
+        login
       </v-btn>
+
+      <v-btn
+        v-else
+        color="accent"
+      >
+        {{$store.state.auth.name}}
+      </v-btn>
+
+      <!-- <v-menu
+        v-model="menu"
+      >
+        <v-btn
+          icon
+          @click.stop="menu = !menu"
+          slot="activator"
+        >
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+        <v-list>
+          <v-list-tile v-for="item in items" :key="item.title" @click="callback">
+            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu> -->
     </v-app-bar>
     <v-content>
       <v-container>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-item @click.native="right = !right">
-          <v-list-item-action>
-            <v-icon light>
-              mdi-repeat
-            </v-icon>
-          </v-list-item-action>
-          <v-list-item-title>Switch drawer (click me)</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer
-      :fixed="fixed"
+      fixed
       app
     >
       <span>&copy; {{ new Date().getFullYear() }} Jacob Strong</span>
@@ -69,14 +80,24 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'Login',
+          to: '/login'
         }
       ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
+      drawer: false,
+      menu: false,
+      search: '',
     }
   }
 }
 </script>
+
+<style>
+.menu-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  background: transparent;
+}
+</style>

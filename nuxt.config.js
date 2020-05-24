@@ -30,6 +30,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
+    { src: '~plugins/quill', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules

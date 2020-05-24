@@ -14,5 +14,6 @@ router.get('/', (req, res, next) => {
 
 router.use('/recipe', require('./recipe'))
 router.use('/user', require('./user'))
+router.use('/tags', require('./tags'))
 
 module.exports = router;

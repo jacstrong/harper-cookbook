@@ -1,0 +1,359 @@
+<template>
+  <v-card>
+    <v-form ref="form" v-model="valid">
+    <v-card-text>
+      <v-row>
+        <v-col cols="12">
+          <span class="display-1">New Recipe</span>
+        </v-col>
+        <v-col
+          cols="12"
+          sm="12"
+          v-if="$store.state.auth.role === 'admin' || $store.state.auth.role === 'superadmin'"
+        >
+          <v-select
+            :items="versions"
+            v-model="version"
+            label="label"
+            outlined
+            dense
+            hide-details
+            :rules="required"
+            required
+          ></v-select>
+        </v-col>
+        <v-col cols="12" sm="12" md="8">
+          <v-text-field
+            label="Name"
+            v-model="name"
+            outlined
+            dense
+            hide-details
+            :rules="required"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="12" md="4">
+          <v-text-field
+            label="By"
+            v-model="by"
+            outlined
+            dense
+            hide-details
+            :rules="required"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col>
+          <v-autocomplete
+            label="Tags"
+            :items="tagsServer"
+            item-text="name"
+            item-value="_id"
+            v-model="tags"
+            :search-input.sync="tagSearch"
+            :hide-no-data="tagSearch && tagSearch.length < 2"
+            outlined
+            append-icon
+            hide-details
+            dense
+            chips
+            small-chips
+            multiple
+            deletable-chips
+            auto-select-first
+            :rules="required"
+            required
+            @change="tagSearch = ''"
+          >
+            <template v-if="tagSearch && tagSearch.length > 2" v-slot:no-data>
+              <v-list-item @click="addTag()">
+                <v-list-item-icon>
+                  <v-icon>mdi-plus</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Add tag: {{tagSearch}}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
+        </v-col>
+        <v-col cols="12">
+          <span class="display-1">Ingredients</span>
+        </v-col>
+        <v-col cols="12" class="py-0">
+          <hr>
+        </v-col>
+      </v-row>
+      <v-row
+        v-for="(ingredient, i) in ingredients"
+        :key="ingredient.key"
+      >
+        <v-col cols="6" sm="2">
+          <v-text-field
+            label="amount"
+            v-model="ingredient.amount"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="6" sm="2">
+          <v-text-field
+            label="Measurement"
+            v-model="ingredient.type"
+            outlined
+            dense
+            hide-details
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="8">
+          <v-text-field
+            label="Ingredient"
+            v-model="ingredient.ingredient"
+            outlined
+            dense
+            hide-details
+            :append-outer-icon="i !== 0 ? `mdi-delete` : ``"
+            @click:append-outer="removeIngredient(i)"
+            @keydown.enter="addIngredient()"
+            :rules="required"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" class="py-0">
+          <hr>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="auto"
+          class="mr-auto"
+        />
+        <v-col cols="auto">
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="accent" @click="addIngredient()">add ingredient</v-btn>
+          </v-card-actions>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <span class="display-1">Directions</span>
+        </v-col>
+      </v-row>
+      <v-row
+        v-for="(direction, i) in directions"
+        :key="direction.key"
+      >
+        <v-col cols="12">
+          <v-textarea
+            :label="`Step ${i + 1}`"
+            v-model="direction.text"
+            outlined
+            dense
+            hide-details
+            :rules="required"
+            required
+            auto-grow
+            rows="3"
+            :append-outer-icon="i !== 0 ? `mdi-delete` : ``"
+            @click:append-outer="removeDirection(i)"
+          ></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="auto"
+          class="mr-auto"
+        />
+        <v-col cols="auto">
+          <v-btn color="accent" @click="addDirection()">add direction</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <span class="display-1">Notes</span>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col id="editor">
+          <client-only>
+            <quill-editor
+              ref="editor"
+              v-model="notes"
+              :options="editorOption"
+            />
+              <!-- @blur="onEditorBlur($event)"
+              @focus="onEditorFocus($event)"
+              @ready="onEditorReady($event)" -->
+          </client-only>
+        </v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer />
+      <v-btn
+        color="accent"
+        @click="saveRecipe()"
+        :disabled="!valid || directions === ''"
+      >
+        Submit
+      </v-btn>
+    </v-card-actions>
+    </v-form>
+  </v-card>
+</template>
+
+<script>
+import { v1 as uuidv1 } from 'uuid'
+
+export default {
+  data: () => ({
+    by: '',
+    directions: [{text: ''}],
+    editorOption: {
+      // Some Quill options...
+      theme: 'snow',
+      placeholder: 'Write the directions here...',
+      modules: {
+        toolbar: [
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+          [{ 'align': [] }],
+          ['link'],
+          // ['link', 'image'],
+        ]
+      },
+      scrollingContainer: '#editor',
+    },
+    ingredients: [{
+      amount: '',
+      ingredient: '',
+      type: '',
+      key: ''
+    }],
+    name: '',
+    notes: '',
+    required: [
+      v => !!v || 'required',
+    ],
+    tags: [],
+    tagSearch: '',
+    tagsServer: [],
+    tagsLoading: false,
+    version: '',
+    versions: [
+      'original',
+      'new',
+    ],
+    valid: true,
+  }),
+  methods: {
+    addIngredient () {
+      this.ingredients.push({
+        amount: '',
+        ingredient: '',
+        type: '',
+        key: uuidv1()
+      })
+    },
+    addDirection () {
+      this.directions.push({
+        text: '',
+        key: uuidv1()
+      })
+    },
+    addTag () {
+      this.$axios.$post('/api/tags', {name: this.tagSearch})
+        .then(res => {
+          this.tagsServer = res
+          this.tagSearch = ''
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getTags () {
+      this.$axios.$get('/api/tags')
+        .then(res => {
+          this.tagsServer = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    removeDirection (i) {
+      this.directions.splice(i, 1)
+    },
+    removeIngredient (i) {
+      this.ingredients.splice(i, 1)
+    },
+    saveRecipe () {
+      let data = {
+        ingredients: this.ingredients,
+        name: this.name,
+        by: this.by,
+        version: this.version,
+        tags: this.tags,
+        directions: this.directions,
+        notes: this.notes,
+      }
+      this.$axios.$post('/api/recipe', data)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+  },
+  created () {
+    this.getTags()
+    if (this.$store.state.auth.role === 'user') this.version = 'new'
+    this.ingredients[0].key = uuidv1()
+    this.directions[0].key = uuidv1()
+  },
+  // watch: {
+    // tagSearch (val) {
+    //   // Items have already been loaded
+    //   if (this.items.length > 0) return
+
+    //   // Items have already been requested
+    //   if (this.tagsLoading) return
+
+    //   this.tagsLoading = true
+
+    // }
+  // },
+}
+</script>
+
+<style>
+.quill-editor {
+  height: auto;
+  min-height: 100%;
+  /* padding: 50px; */
+}
+
+.quill-container .ql-editor {
+  font-size: 18px;
+  overflow-y: visible;
+}
+
+#scrolling-container {
+  height: 100%;
+  min-height: 100%;
+  overflow-y: auto;
+}
+
+/* #editor {
+  height: 100%;
+  min-height: 200px;
+  overflow-y: auto;
+} */
+</style>

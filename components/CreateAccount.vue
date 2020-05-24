@@ -40,7 +40,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="success" @click="createAccount()">Create Account</v-btn>
+        <v-btn color="accent" @click="createAccount()">Create Account</v-btn>
       </v-card-actions>
     </v-form>
   </v-card>
@@ -85,7 +85,7 @@ export default {
           email: this.email,
           password: this.password,
         }).then(res => {
-            console.log(res)
+            this.$router.push('/')
           })
           .catch(err => {
             console.log(err)

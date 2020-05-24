@@ -21,7 +21,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn small rounded color="success" @click="login()">login</v-btn>
+          <v-btn rounded color="accent" @click="login()">login</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>
