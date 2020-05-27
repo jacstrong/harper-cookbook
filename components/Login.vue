@@ -47,8 +47,10 @@ export default {
       if (!this.$refs.form.validate()) {
         return
       } else {
-        this.$axios.$post('api/user/login', {email: this.email, password: this.password})
+        this.$axios.post('api/user/login', {email: this.email, password: this.password})
           .then(res => {
+            console.log(res.data)
+            console.log(res.data)
             this.$emit('loginSuccess')
           })
           .catch(err => {
