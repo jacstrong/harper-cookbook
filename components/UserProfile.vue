@@ -1,6 +1,12 @@
 <template>
   <div>
     <v-card class="mb-3">
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="accent" @click="logout">logout</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-card class="mb-3">
       <v-card-title primary-title>
         Your Information
       </v-card-title>
@@ -45,7 +51,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="changePassword()">update password</v-btn>
+          <v-btn color="accent" @click="changePassword()">update password</v-btn>
         </v-card-actions>
         <v-card-text v-if="message !== ''">
           {{message}}
@@ -78,6 +84,17 @@ export default {
         })
         .catch(err => {
           this.message = 'Something went wrong 😭'
+        })
+    },
+    logout () {
+      this.$axios.$get(`/api/user/logout`)
+        .then(() => {
+          this.$store.commit('logout')
+          this.$router.push('/')
+        })
+        .catch(err => {
+          console.log(err)
+          this.$router.push('/')
         })
     }
   },

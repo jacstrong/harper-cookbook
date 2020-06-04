@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 export const state = () => ({
   auth: null,
 })
@@ -8,6 +10,12 @@ export const mutations = {
   },
   setAuth (state, auth) {
     state.auth = auth
+  },
+  setAuthFromJWT (state, token) {
+    state.auth = jwt.decode(token)
+  },
+  logout (state) {
+    state.auth = null
   }
 }
 
@@ -19,5 +27,5 @@ export const actions = {
       auth = req.user
     }
     commit('setAuth', auth)
-  }
+  },
 }

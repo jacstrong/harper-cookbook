@@ -89,7 +89,7 @@
       </v-row>
       <v-row
         v-for="(ingredient, i) in ingredients"
-        :key="ingredient.key"
+        :key="ingredient._id ? ingredient._id : ingredient.key"
       >
         <v-col cols="6" sm="2">
           <v-text-field
@@ -146,7 +146,7 @@
       </v-row>
       <v-row
         v-for="(direction, i) in directions"
-        :key="direction.key"
+        :key="direction._id ? direction._id : direction.key"
       >
         <v-col cols="12">
           <v-textarea
@@ -195,12 +195,50 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
+      <v-dialog
+        v-model="preview"
+        width="600"
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            color="primary"
+            dark
+            v-on="on"
+          >
+            Preview
+          </v-btn>
+        </template>
+
+        <v-card>
+          <Recipe :recipe="recipePreview" />
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              text
+              @click="preview = false"
+            >
+              Close
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
       <v-btn
+        v-if="id === ''"
+        color="accent"
+        @click="submitRecipe()"
+        :disabled="!valid || directions === ''"
+      >
+        Submit
+      </v-btn>
+      <v-btn
+        v-else
         color="accent"
         @click="saveRecipe()"
         :disabled="!valid || directions === ''"
       >
-        Submit
+        Save Changes
       </v-btn>
     </v-card-actions>
     </v-form>
@@ -209,15 +247,22 @@
 
 <script>
 import { v1 as uuidv1 } from 'uuid'
+import Recipe from '~/components/Recipe'
 
 export default {
+  props: [
+    'recipe'
+  ],
+  components: {
+    Recipe
+  },
   data: () => ({
     by: '',
     directions: [{text: ''}],
     editorOption: {
       // Some Quill options...
       theme: 'snow',
-      placeholder: 'Write the directions here...',
+      placeholder: 'Write the notes here...',
       modules: {
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -231,6 +276,7 @@ export default {
       },
       scrollingContainer: '#editor',
     },
+    id: '',
     ingredients: [{
       amount: '',
       ingredient: '',
@@ -239,6 +285,7 @@ export default {
     }],
     name: '',
     notes: '',
+    preview: false,
     required: [
       v => !!v || 'required',
     ],
@@ -293,7 +340,7 @@ export default {
     removeIngredient (i) {
       this.ingredients.splice(i, 1)
     },
-    saveRecipe () {
+    submitRecipe () {
       let data = {
         ingredients: this.ingredients,
         name: this.name,
@@ -311,25 +358,57 @@ export default {
           console.log(err)
         })
     },
+    saveRecipe () {
+      let data = {
+        ingredients: this.ingredients,
+        name: this.name,
+        by: this.by,
+        version: this.version,
+        tags: this.tags,
+        directions: this.directions,
+        notes: this.notes,
+      }
+      this.$axios.$put(`/api/recipe/${this.id}`, data)
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    setRecipe () {
+      this.ingredients = this.recipe.ingredients
+      this.directions = this.recipe.directions
+      this.by = this.recipe.by
+      this.version = this.recipe.version
+      this.tags = this.recipe.tags
+      this.notes = this.recipe.notes
+      this.name = this.recipe.name
+      this.id = this.recipe._id
+    }
   },
   created () {
     this.getTags()
     if (this.$store.state.auth.role === 'user') this.version = 'new'
     this.ingredients[0].key = uuidv1()
     this.directions[0].key = uuidv1()
+    console.log('val', this.recipe)
+
+    if (this.recipe) this.setRecipe()
   },
-  // watch: {
-    // tagSearch (val) {
-    //   // Items have already been loaded
-    //   if (this.items.length > 0) return
-
-    //   // Items have already been requested
-    //   if (this.tagsLoading) return
-
-    //   this.tagsLoading = true
-
-    // }
-  // },
+  computed: {
+    recipePreview () {
+      return {
+        ingredients: this.ingredients,
+        directions: this.directions,
+        by: this.by,
+        version: this.version,
+        tags: this.tags,
+        notes: this.notes,
+        name: this.name,
+      }
+    }
+  }
 }
 </script>
 

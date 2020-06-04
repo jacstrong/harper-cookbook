@@ -33,6 +33,7 @@
       <v-btn
         v-else
         color="accent"
+        to="/profile"
       >
         {{$store.state.auth.name}}
       </v-btn>

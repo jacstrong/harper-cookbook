@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col>
-          <NewRecipe />
+          <EditRecipe />
         </v-col>
       </v-row>
     </v-container>
@@ -11,12 +11,12 @@
 </template>
 
 <script>
-import NewRecipe from '~/components/NewRecipe'
+import EditRecipe from '~/components/EditRecipe'
 
 export default {
   middleware: 'authenticated',
   components: {
-    NewRecipe
+    EditRecipe
   },
   data: () => ({
 

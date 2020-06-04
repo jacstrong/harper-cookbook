@@ -23,7 +23,12 @@ const RecipeSchema = mongoose.Schema({
   tags: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'TagSchema'
-  }]
+  }],
+  submitter: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'UserSchema',
+    required: [true, 'Must have an associated submitter']
+  }
 })
 
 module.exports = mongoose.model('RecipeSchema', RecipeSchema);

@@ -93,6 +93,11 @@ router.post('/login', (req, res, next) => {
   })(req, res, next)
 })
 
+router.get('/logout', (req, res, next) => {
+  res.clearCookie('authorization')
+  return res.json({message: 'You have been logged out'})
+})
+
 router.post('/changepassword', auth.required, async (req, res, next) => {
   console.log('req.user', req.user)
   if (!req.body.password) return res.status(422).json({error: { message: 'please provide new password' }})
