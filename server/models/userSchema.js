@@ -11,7 +11,7 @@ const UserSchema = mongoose.Schema({
   name: { type: String, required: true },
   relation: { type: String },
   salt: { type: String, required: true },
-  role: { type: String, required: true, default: 'superadmin', enum: ['user', 'admin', 'superadmin']}
+  role: { type: String, required: true, default: 'user', enum: ['user', 'admin', 'superadmin']}
 })
 
 UserSchema.methods.setPassword = function (password) {
