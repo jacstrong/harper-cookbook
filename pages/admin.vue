@@ -13,6 +13,7 @@
 
 <script>
 export default {
+  middleware: 'issuperadmin',
   data: () => ({
     users: [],
     message: ''
