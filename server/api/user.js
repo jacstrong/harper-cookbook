@@ -113,4 +113,23 @@ router.post('/changepassword', auth.required, async (req, res, next) => {
     })
 })
 
+router.get('/allusers', auth.required, async (req, res, next) => {
+  if (req.user.role !== 'superadmin') return res.status(404)
+
+  const users = await UserSchema.find({}, 'active lastLogin role name relation email').exec()
+  res.json(users)
+})
+
+router.put('/adminupdate/:id', auth.required, async (req, res, next) => {
+  console.log('stuff is getting realo', req.user)
+  if (req.user.role !== 'superadmin') return res.status(404)
+
+  try {
+    const user = await UserSchema.findByIdAndUpdate(req.params.id, req.body).exec()
+    return res.json({message: 'yo you did it'})
+  } catch (error) {
+    return res.status(500).json({error: { message: 'you messed something up'}})
+  }
+})
+
 module.exports = router;
