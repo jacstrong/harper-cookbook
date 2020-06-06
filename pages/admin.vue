@@ -24,8 +24,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <span v-if="notActiveUsers.length === 0">No body is waiting.</span>
-        <hr>
+        <span v-if="notActiveUsers.length === 0">Nobody is waiting to be approved.</span>
       </v-col>
     </v-row>
     <v-row>
@@ -36,25 +35,37 @@
     </v-row>
     </v-row>
     <v-row v-for="user in activeUsers" :key="user._id">
-      <v-col>
+      <v-col cols="6" sm="4">
         {{user.name}}
       </v-col>
-      <v-col>
+      <v-col cols="6" sm="4">
         {{user.email}}
       </v-col>
-      <v-col>
+      <v-col cols="6" sm="4">
         {{user.relation}}
       </v-col>
-      <v-col>
+      <v-col cols="6" sm="4">
         {{user.role}}
       </v-col>
       <!-- {{user}} -->
-      <v-col>
+      <v-col cols="6" sm="4">
+        <v-select
+          :items="items"
+          v-model="user.role"
+          label="Role"
+          outlined
+          @change="make(user, $event)"
+        ></v-select>
+      </v-col>
+      <v-col cols="6" sm="4">
         <v-btn small color="accent" @click="activate(user, false)">Deactivate</v-btn>
-        <v-btn small color="accent" @click="make(user, 'user')">make 'user'</v-btn>
+        <!-- <v-btn small color="accent" @click="make(user, 'user')">make 'user'</v-btn>
         <v-btn small color="accent" @click="make(user, 'admin')">make 'admin'</v-btn>
-        <v-btn small color="accent" @click="make(user, 'superadmin')">make 'superadmin'</v-btn>
+        <v-btn small color="accent" @click="make(user, 'superadmin')">make 'superadmin'</v-btn> -->
         <v-btn small color="accent" :to="`/admin/useredit/${user._id}`">edit</v-btn>
+      </v-col>
+      <v-col cols="12">
+        <hr>
       </v-col>
     </v-row>
   </v-content>
@@ -68,7 +79,8 @@ export default {
   }),
   data: () => ({
     users: [],
-    message: ''
+    message: '',
+    items: [ 'user', 'admin', 'superadmin' ]
   }),
   asyncData ({$axios}) {
     return $axios.get('/api/user/allusers')
@@ -81,6 +93,22 @@ export default {
       })
   },
   methods: {
+    activate (user, active) {
+      this.$axios.put(`/api/user/adminupdate/${user._id}`, {active})
+        .then(res => {
+          this.$axios.get('api/user/allusers')
+            .then(res => {
+              this.users = res.data
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          this.message = 'Done'
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
     make (user, role) {
       this.$axios.put(`/api/user/adminupdate/${user._id}`, {role})
         .then(res => {
@@ -97,22 +125,6 @@ export default {
           console.log(err)
         })
     },
-    activate (user, active) {
-      this.$axios.put(`/api/user/adminupdate/${user._id}`, {active})
-        .then(res => {
-          this.$axios.get('api/user/allusers')
-            .then(res => {
-              this.users = res.data
-            })
-            .catch(err => {
-              console.log(err)
-            })
-          this.message = 'Done'
-        })
-        .catch(err => {
-          console.log(err)
-        })
-    }
   },
   computed: {
     activeUsers () {
@@ -136,3 +148,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+hr {
+  color: darkgreen;
+}
+</style>
