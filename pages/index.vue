@@ -73,7 +73,7 @@ export default {
   async asyncData ({$axios}) {
     try {
       const recipes = await $axios.$get('/api/recipe')
-      // console.log('fricken res', res)
+
       return {recipes}
 
     } catch (error) {
