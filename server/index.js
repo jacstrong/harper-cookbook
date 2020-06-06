@@ -1,7 +1,7 @@
 const express = require('express')
 const consola = require('consola')
 const mongoose = require('mongoose')
-import { v1 as uuidv1 } from 'uuid';
+const { v1: uuidv1 } = require('uuid')
 const cookieParser = require('cookie-parser')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
