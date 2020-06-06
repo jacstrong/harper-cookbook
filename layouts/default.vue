@@ -5,7 +5,7 @@
       fixed
       app
     >
-      <v-toolbar-title class="white--text" v-text="'Harper Family Cook Book'" />
+      <v-toolbar-title class="white--text" v-text="'Harper Family Cook Book'" @click="$router.push('/')"/>
       <v-spacer />
 
       <!-- <v-autocomplete
@@ -64,7 +64,7 @@
       fixed
       app
     >
-      <span>Made with ♥ Jacob Strong</span>
+      <span>Made with ♥ by Jacob Strong</span>
     </v-footer>
   </v-app>
 </template>
