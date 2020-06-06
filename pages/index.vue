@@ -1,52 +1,51 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <div class="text-center">
-        Welcome to the harper cookbook
-        <v-btn color="accent" to="/newrecipe">Add Recipe</v-btn>
-      </div>
-      <!-- <div v-for="recipe in recipes" :key="recipe._id">
-        {{recipe.name}} {{recipe.by}} <nuxt-link :to="`/${recipe._id}`">view</nuxt-link>
-      </div> -->
-      <v-card>
-      <v-card-title>
-        Recipes
-        <v-spacer></v-spacer>
-        <v-text-field
-          v-model="search"
-          append-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-        ></v-text-field>
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="recipes"
-        :search="search"
-        @click:row="viewItem"
-      >
-        <template v-slot:item.actions="{ item }">
-          <v-icon
-            small
-            class="mr-2"
-            @click.stop="editItem(item)"
+  <v-content class="pt-3">
+    <v-row>
+      <v-col>
+        <v-card>
+          <v-card-title>
+            Recipes
+            <v-spacer></v-spacer>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </v-card-title>
+          <v-data-table
+            :headers="headers"
+            :items="recipes"
+            :search="search"
+            @click:row="viewItem"
           >
-            mdi-pencil
-          </v-icon>
-        </template>
-      </v-data-table>
-    </v-card>
-    </v-flex>
-  </v-layout>
+            <template v-slot:item.actions="{ item }">
+              <v-icon
+                small
+                class="mr-2"
+                @click.stop="editItem(item)"
+              >
+                mdi-pencil
+              </v-icon>
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        With the family spreading out and younger generations coming of age, we thought it was time to digitize the Harper Family Cookbook.
+        We have also added the option to contribute new recipes. If you would like to contribute you must create an account.
+        We will verify your account and you will be able to add any recipes you like.
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <v-btn color="accent" to="/newrecipe">Add Recipe</v-btn>
+      </v-col>
+    </v-row>
+  </v-content>
 </template>
 
 <script>
@@ -84,15 +83,6 @@ export default {
   methods: {
     editItem (item) {
       this.$router.push(`/edit-recipe/${item._id}`)
-    },
-    testUser () {
-      this.$axios.$post('/api/user/changepassword', { password: 'jimmyeatworld'})
-        .then(res => {
-          console.log(res.body)
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     viewItem (item) {
       this.$router.push(`/${item._id}`)

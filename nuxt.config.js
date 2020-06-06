@@ -6,12 +6,13 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    titleTemplate: '%s - ' + process.env.npm_package_name,
-    title: process.env.npm_package_name || '',
+    titleTemplate: '%s - The Harper Cookbook',
+    title: 'The Harper Cookbook',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
+      { hid: 'description', name: 'description', content: `Adapted from the original printing of The Harper Family Cookbook, we have digitized all of your favorite recepies. You can now easily search for the recipe you are looking for by name, type, or by who originally shared it. We have also now made it possible to share new recipes so the tradition can carry on!'` },
+      { name: 'keywords', content: 'cookbook, harper, harper cookbook, harper family cookbook, the harper family, the harper family cookbook, family cookbook, the family cookbook, recipes'},
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }

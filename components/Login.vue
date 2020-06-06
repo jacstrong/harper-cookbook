@@ -20,6 +20,7 @@
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
+          <v-btn rounded color="primary" to="/newaccount">Create an account</v-btn>
           <v-spacer></v-spacer>
           <v-btn rounded color="accent" @click="login()">login</v-btn>
         </v-card-actions>

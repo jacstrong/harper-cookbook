@@ -5,7 +5,7 @@
       fixed
       app
     >
-      <v-toolbar-title class="white--text" v-text="'Harper Family Cook book'" />
+      <v-toolbar-title class="white--text" v-text="'Harper Family Cook Book'" />
       <v-spacer />
 
       <!-- <v-autocomplete
@@ -64,7 +64,7 @@
       fixed
       app
     >
-      <span>&copy; {{ new Date().getFullYear() }} Jacob Strong</span>
+      <span>Made with ♥ Jacob Strong</span>
     </v-footer>
   </v-app>
 </template>
@@ -73,18 +73,6 @@
 export default {
   data () {
     return {
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Login',
-          to: '/login'
-        }
-      ],
       drawer: false,
       menu: false,
       search: '',
