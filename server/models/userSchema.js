@@ -33,7 +33,7 @@ UserSchema.methods.generateJWT = function () {
     name: this.name,
     id: this._id,
     role: this.role
-  }, 'secret', { expiresIn: '3d' }); // TODO: Set Secret
+  }, process.env.NODE_ENV === 'development' ? 'secret' : process.env.SECRET, { expiresIn: '3d' }); // TODO: Set Secret
 }
 
 UserSchema.methods.toAuthJSON = function () {

@@ -1,9 +1,11 @@
 const express = require('express')
 const consola = require('consola')
 const mongoose = require('mongoose')
+import { v1 as uuidv1 } from 'uuid';
 const cookieParser = require('cookie-parser')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+
 
 const auth = require('./plugins/auth')
 
@@ -28,6 +30,7 @@ async function start () {
 
   if (isProduction) {
     mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true })
+    process.env.SECRET = uuidv1()
   } else {
     mongoose.connect('mongodb://localhost:27017/harper-cookbook', { useNewUrlParser: true })
   }
