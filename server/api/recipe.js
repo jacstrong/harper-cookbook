@@ -12,7 +12,7 @@ const RecipeSchema = mongoose.model('RecipeSchema')
 
 router.get('/', async (req, res, next) => {
   const recipes = await RecipeSchema.find().exec()
-  console.log(recipes)
+  // console.log(recipes)
   res.json(recipes)
 })
 
@@ -23,6 +23,11 @@ router.get('/:id', async (req, res, next) => {
   const recipe = await RecipeSchema.findById(req.params.id).exec()
   if (recipe === null) return res.status(404).json({error: {message: 'Cannot find that recipe'}})
   res.json(recipe)
+  recipe.views = recipe.views + 1
+  recipe.save()
+    .catch(err => {
+      console.log(err)
+    })
 })
 
 router.post('/', auth.required, async (req, res, next) => {

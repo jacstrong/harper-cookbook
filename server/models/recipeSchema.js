@@ -28,7 +28,8 @@ const RecipeSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserSchema',
     required: [true, 'Must have an associated submitter']
-  }
+  },
+  views: { type: Number, default: 0 }
 })
 
 module.exports = mongoose.model('RecipeSchema', RecipeSchema);

@@ -56,9 +56,7 @@
       </v-menu> -->
     </v-app-bar>
     <v-content>
-      <v-container>
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-content>
     <v-footer
       fixed
