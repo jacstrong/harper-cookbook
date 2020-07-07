@@ -12,6 +12,7 @@
               color="primary"
               class="white"
               hide-details
+              :hide-no-data="remoteSearchItems.lenght !== 0"
               :menu-props="{
                 'closeOnClick': false,
                 'closeOnContentClick': false,
@@ -20,6 +21,8 @@
                 'maxHeight': 304,
                 'rounded': '8px',
               }"
+              :search-input.sync="remoteSearch"
+              :items="remoteSearchItems"
             ></v-autocomplete>
               <!-- v-model="value" -->
           </v-col>
@@ -110,6 +113,8 @@ export default {
     ],
     recipes: [],
     search: '',
+    remoteSearch: '',
+    remoteSearchItems: [],
     error: false,
     tags: [],
   }),
@@ -131,8 +136,25 @@ export default {
     },
     viewItem (item) {
       this.$router.push(`/${item._id}`)
+    },
+    querySearch () {
+      this.$axios.get('/api/recipe/search', {query: {search: this.remoteSearch}})
+        .then(res => {
+          console.log(res)
+          this.remoteSearchItems = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
+  watch: {
+    remoteSearch: function (val) {
+      if (val && val.length > 2) {
+        this.querySearch()
+      }
+    }
+  }
   // created () {
   // }
 }

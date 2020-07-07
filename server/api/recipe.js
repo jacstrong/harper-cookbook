@@ -16,6 +16,19 @@ router.get('/', async (req, res, next) => {
   res.json(recipes)
 })
 
+router.get('/search', async (req, res, next) => {
+  console.log('yo my name is mike')
+  if (!req.query.search) return res.json([])
+  let search = new RegExp(req.query.search, 'i')
+  const recipes = await RecipeSchema.find({
+    $or:[
+      {name: search},
+      {by: search}
+    ]
+  }, 'name by', { limit: 10})
+  return res.json(recipes)
+})
+
 router.get('/:id', async (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(404).json({error: {message: 'Cannot find that recipe'}})
