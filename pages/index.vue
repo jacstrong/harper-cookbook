@@ -5,14 +5,45 @@
         <v-row>
           <v-col cols="0" sm="1" md="3" />
           <v-col>
-            <v-autocomplete
+              <!-- :hide-no-data="remoteSearchItems.lenght === 0" -->
+              <!-- <template v-slot:activator="{ on }"> -->
+            <v-text-field
+              label="Search"
+              rounded
+              filled
+              color="primary"
+              class="white searchField"
+              hide-details
+              v-model="remoteSearch"
+            ></v-text-field>
+              <!-- </template> -->
+            <v-menu
+              :value="remoteSearchItems.length > 0"
+              absolute
+              attach=".searchField"
+              auto
+              bottom
+              nudge-bottom="55"
+              origin="bottom center"
+            >
+              <v-list>
+                <v-list-item v-for="item in remoteSearchItems" :key="item.key" @click="viewItem(item)">
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+            <!-- <v-autocomplete
+              disable-lookup
               label="Search"
               rounded
               filled
               color="primary"
               class="white"
               hide-details
-              :hide-no-data="remoteSearchItems.lenght !== 0"
               :menu-props="{
                 'closeOnClick': false,
                 'closeOnContentClick': false,
@@ -23,7 +54,7 @@
               }"
               :search-input.sync="remoteSearch"
               :items="remoteSearchItems"
-            ></v-autocomplete>
+            ></v-autocomplete> -->
               <!-- v-model="value" -->
           </v-col>
           <v-col cols="0" sm="1" md="3" />
@@ -138,7 +169,7 @@ export default {
       this.$router.push(`/${item._id}`)
     },
     querySearch () {
-      this.$axios.get('/api/recipe/search', {query: {search: this.remoteSearch}})
+      this.$axios.get('/api/recipe/search', {params: {search: this.remoteSearch}})
         .then(res => {
           console.log(res)
           this.remoteSearchItems = res.data
