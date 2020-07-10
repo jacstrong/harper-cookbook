@@ -17,7 +17,6 @@ router.get('/', async (req, res, next) => {
 })
 
 router.get('/search', async (req, res, next) => {
-  console.log('yo my name is mike')
   if (!req.query.search) return res.json([])
   let search = new RegExp(req.query.search, 'i')
   const recipes = await RecipeSchema.find({

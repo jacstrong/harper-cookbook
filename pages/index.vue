@@ -15,47 +15,9 @@
               class="white searchField"
               hide-details
               v-model="remoteSearch"
+              ref="searchField"
+              @input="searchChange"
             ></v-text-field>
-              <!-- </template> -->
-            <v-menu
-              :value="remoteSearchItems.length > 0"
-              absolute
-              attach=".searchField"
-              auto
-              bottom
-              nudge-bottom="55"
-              origin="bottom center"
-            >
-              <v-list>
-                <v-list-item v-for="item in remoteSearchItems" :key="item.key" @click="viewItem(item)">
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      {{ item.name }}
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-            <!-- <v-autocomplete
-              disable-lookup
-              label="Search"
-              rounded
-              filled
-              color="primary"
-              class="white"
-              hide-details
-              :menu-props="{
-                'closeOnClick': false,
-                'closeOnContentClick': false,
-                'disableKeys': true,
-                'openOnClick': false,
-                'maxHeight': 304,
-                'rounded': '8px',
-              }"
-              :search-input.sync="remoteSearch"
-              :items="remoteSearchItems"
-            ></v-autocomplete> -->
-              <!-- v-model="value" -->
           </v-col>
           <v-col cols="0" sm="1" md="3" />
         </v-row>
@@ -63,6 +25,39 @@
     </div>
     <div>
       <v-container>
+        <v-row v-if="remoteSearchItems.length > 0" class="text-center">
+          <v-col class="py-1">
+            <strong>Search Results</strong>
+          </v-col>
+        </v-row>
+        <v-row v-if="remoteSearchItems.length > 0">
+
+          <v-card
+            flat
+            max-height="300"
+            min-width="100%"
+          >
+            <v-list-item
+              v-for="item in remoteSearchItems"
+              :key="item._id"
+              two-line
+              @click="viewItem(item)"
+              min-width="100%"
+              class="text-center"
+            >
+              <v-list-item-content>
+                <v-list-item-title>{{item.name}}</v-list-item-title>
+                <v-list-item-subtitle>{{item.by}}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-card>
+        </v-row>
+        <v-row v-if="noResults">
+          <v-col class="text-center">
+            <v-img src="/undraw_Chef_cu0r.svg" contain max-height="150" />
+            No Results
+          </v-col>
+        </v-row>
         <v-row>
           <v-col>
             <v-chip
@@ -177,6 +172,11 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    searchChange () {
+      if (this.remoteSearch === '' || this.remoteSearch.length <= 2) {
+        this.remoteSearchItems = []
+      }
     }
   },
   watch: {
@@ -184,6 +184,11 @@ export default {
       if (val && val.length > 2) {
         this.querySearch()
       }
+    }
+  },
+  computed: {
+    noResults: function () {
+      return this.remoteSearch.length > 2 && this.remoteSearchItems.length === 0
     }
   }
   // created () {
