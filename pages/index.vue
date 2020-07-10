@@ -33,7 +33,7 @@
         <v-row v-if="remoteSearchItems.length > 0">
 
           <v-card
-            flat
+            class="search-card"
             max-height="300"
             min-width="100%"
           >
@@ -211,5 +211,9 @@ export default {
   background-size: cover;
   padding-top: 30px;
   padding-bottom: 30px;
+}
+
+.search-card {
+  overflow-x: scroll;
 }
 </style>
