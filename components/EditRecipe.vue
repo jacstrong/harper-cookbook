@@ -14,7 +14,7 @@
           <v-select
             :items="versions"
             v-model="version"
-            label="label"
+            label="Version"
             outlined
             dense
             hide-details
@@ -174,6 +174,122 @@
         </v-col>
       </v-row>
       <v-row>
+        <v-col>
+          <v-switch label="Sub Recipe" v-model="sub"></v-switch>
+        </v-col>
+      </v-row>
+
+      <div v-if="sub">
+      <v-card>
+        <v-card-text>
+          <v-row
+            v-for="(ingredient, i) in subIngredients"
+            :key="ingredient._id ? ingredient._id : ingredient.key"
+          >
+            <v-col cols="12" sm="12" md="8">
+              <v-text-field
+                label="Sub Recipe Name"
+                v-model="subName"
+                outlined
+                dense
+                hide-details
+                :rules="required"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12">
+              <span class="display-1">Ingredients</span>
+            </v-col>
+            <v-col cols="12" class="py-0">
+              <hr>
+            </v-col>
+            <v-col cols="6" sm="2">
+              <v-text-field
+                label="amount"
+                v-model="ingredient.amount"
+                outlined
+                dense
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="6" sm="2">
+              <v-text-field
+                label="Measurement"
+                v-model="ingredient.type"
+                outlined
+                dense
+                hide-details
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="8">
+              <v-text-field
+                label="Ingredient"
+                v-model="ingredient.ingredient"
+                outlined
+                dense
+                hide-details
+                :append-outer-icon="i !== 0 ? `mdi-delete` : ``"
+                @click:append-outer="removeSubIngredient(i)"
+                @keydown.enter="addSubIngredient()"
+                :rules="required"
+                required
+              ></v-text-field>
+            </v-col>
+            <v-col cols="12" class="py-0">
+              <hr>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="auto"
+              class="mr-auto"
+            />
+            <v-col cols="auto">
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="accent" @click="addSubIngredient()">add ingredient</v-btn>
+              </v-card-actions>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="12">
+              <span class="display-1">Directions</span>
+            </v-col>
+          </v-row>
+          <v-row
+            v-for="(direction, i) in subDirections"
+            :key="direction._id ? direction._id : direction.key"
+          >
+            <v-col cols="12">
+              <v-textarea
+                :label="`Step ${i + 1}`"
+                v-model="direction.text"
+                outlined
+                dense
+                hide-details
+                :rules="required"
+                required
+                auto-grow
+                rows="3"
+                :append-outer-icon="i !== 0 ? `mdi-delete` : ``"
+                @click:append-outer="removeSubDirection(i)"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="auto"
+              class="mr-auto"
+            />
+            <v-col cols="auto">
+              <v-btn color="accent" @click="addSubDirection()">add direction</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+      </div>
+
+      <v-row>
         <v-col cols="12">
           <span class="display-1">Notes</span>
         </v-col>
@@ -259,6 +375,7 @@ export default {
   data: () => ({
     by: '',
     directions: [{text: ''}],
+    subDirections: [{text: ''}],
     editorOption: {
       // Some Quill options...
       theme: 'snow',
@@ -283,12 +400,20 @@ export default {
       type: '',
       key: ''
     }],
+    subIngredients: [{
+      amount: '',
+      ingredient: '',
+      type: '',
+      key: ''
+    }],
     name: '',
+    subName: '',
     notes: '',
     preview: false,
     required: [
       v => !!v || 'required',
     ],
+    sub: false,
     tags: [],
     tagSearch: '',
     tagsServer: [],
@@ -309,8 +434,22 @@ export default {
         key: uuidv1()
       })
     },
+    addSubIngredient () {
+      this.subIngredients.push({
+        amount: '',
+        ingredient: '',
+        type: '',
+        key: uuidv1()
+      })
+    },
     addDirection () {
       this.directions.push({
+        text: '',
+        key: uuidv1()
+      })
+    },
+    addSubDirection () {
+      this.subDirections.push({
         text: '',
         key: uuidv1()
       })
@@ -337,8 +476,14 @@ export default {
     removeDirection (i) {
       this.directions.splice(i, 1)
     },
+    removeSubDirection (i) {
+      this.subDirections.splice(i, 1)
+    },
     removeIngredient (i) {
       this.ingredients.splice(i, 1)
+    },
+    removeSubIngredient (i) {
+      this.subIngredients.splice(i, 1)
     },
     submitRecipe () {
       let data = {
@@ -350,6 +495,15 @@ export default {
         directions: this.directions,
         notes: this.notes,
       }
+
+      if (this.sub) {
+        data.subRecipe = {
+          ingredients: this.subIngredients,
+          directions: this.subDirections,
+          name: this.subName
+        }
+      }
+
       this.$axios.$post('/api/recipe', data)
         .then(() => {
           this.$router.push('/')
@@ -385,13 +539,22 @@ export default {
       this.notes = this.recipe.notes
       this.name = this.recipe.name
       this.id = this.recipe._id
+
+      if (this.recipe.subRecipe) {
+        this.sub = true
+        this.subIngredients = this.recipe.subRecipe.ingredients,
+        this.subDirections = this.recipe.subRecipe.directions,
+        this.subName = this.recipe.subRecipe.name
+      }
     }
   },
   created () {
     this.getTags()
     if (this.$store.state.auth.role === 'user') this.version = 'new'
     this.ingredients[0].key = uuidv1()
+    this.subIngredients[0].key = uuidv1()
     this.directions[0].key = uuidv1()
+    this.subDirections[0].key = uuidv1()
     console.log('val', this.recipe)
 
     if (this.recipe) this.setRecipe()
@@ -406,6 +569,11 @@ export default {
         tags: this.tags,
         notes: this.notes,
         name: this.name,
+        subRecipe: this.sub ? {
+          name: this.subName,
+          ingredient: this.subIngredients,
+          directions: this.subDirections
+        } : undefined
       }
     }
   }

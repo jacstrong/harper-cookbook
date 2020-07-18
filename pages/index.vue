@@ -59,7 +59,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col class="tag-container">
             <v-chip
               v-for="tag in tags"
               :key="tag._id"
@@ -215,5 +215,11 @@ export default {
 
 .search-card {
   overflow-x: scroll;
+}
+
+.tag-container {
+  overflow: auto;
+  white-space: nowrap;
+
 }
 </style>

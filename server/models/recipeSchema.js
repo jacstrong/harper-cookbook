@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 
 const RecipeSchema = mongoose.Schema({
   name: { type: String, required: [true, 'You must provide a name.'], index: true},
@@ -28,6 +26,19 @@ const RecipeSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'UserSchema',
     required: [true, 'Must have an associated submitter']
+  },
+  subRecipe: {
+    name: { type: String },
+    ingredients: [{
+      ingredient: {
+        type: String,
+      },
+      type: { type: String, },
+      amount: { type: String }
+    }],
+    directions: [{
+      text: { type: String }
+    }],
   },
   views: { type: Number, default: 0 }
 })
