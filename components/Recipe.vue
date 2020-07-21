@@ -73,7 +73,7 @@
     </v-row>
 
 
-    <div v-if="recipe.subRecipe" class="mt-5">
+    <div v-if="recipe.subRecipe && recipe.subRecipe.directions.length > 0" class="mt-5">
       <v-card>
         <v-card-text>
           <v-row>
@@ -189,6 +189,9 @@ export default {
       ingredient.done = next
       this.$set(this.recipe.subRecipe.ingredients, i, ingredient)
     }
+  },
+  mounted () {
+    console.log(this.recipe)
   }
 }
 </script>
