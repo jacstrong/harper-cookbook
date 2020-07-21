@@ -64,6 +64,7 @@
               v-for="tag in tags"
               :key="tag._id"
               class="mr-3"
+              :to="`/category/${tag._id}`"
             >
               {{tag.name}}
             </v-chip>

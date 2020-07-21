@@ -63,4 +63,13 @@ router.put('/:id', async (req, res, next) => {
   return res.json(recipe)
 })
 
+router.get('/category/:id', async (req, res, next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    return res.status(404).json({error: {message: 'Invalid category'}})
+  }
+
+  const recipes = await RecipeSchema.find({tags: req.params.id}, 'name by version').exec()
+  return res.json(recipes)
+})
+
 module.exports = router;
