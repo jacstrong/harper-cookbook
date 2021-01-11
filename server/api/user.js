@@ -30,39 +30,6 @@ router.post('/'/* , auth.optional */, (req, res, next) => {
       console.log(doc)
       res.json(doc)
     })
-
-  // UserSchema.findOne({ email: request.email, active: true, emailConfirmation: true }, (err, doc) => {
-  //   if (err) return res.status(500).json({ error: { message: 'server error'}})
-  //   if (doc != null) {
-  //     return res.status(422).json({
-  //       error: {
-  //         message: 'email already in use' // TODO: don't let them know there is an account.
-  //       }
-  //     });
-  //   } else {
-  //     const finalUser = new UserSchema(user);
-
-  //     finalUser.setPassword(user.password);
-
-  //     // const emailConfirmation = new EmailConfirmationSchema({ userID: finalUser._id })
-  //     // emailConfirmation.generateCode()
-  //     // let emailData = {
-  //     //   code: emailConfirmation.getCode(),
-  //     //   firstName: finalUser.firstName,
-  //     //   confirmationID: emailConfirmation._id,
-  //     //   email: request.email
-  //     // }
-
-  //     // emailConfirmation.save()
-
-  //     // email.accountConfirmation(emailData);
-
-  //     return finalUser
-  //     .save()
-  //     .then(() => res.json({ user: finalUser.toAuthJSON() }))
-  //     .catch((err) => console.log(err.message));
-  //   }
-  // });
 })
 
 
@@ -73,6 +40,7 @@ router.get('/', (req, res, next) => {
     return res.status(401).json({message: 'Token missing or invalid', success: false }).send()
   }
 });
+
 
 router.post('/login', (req, res, next) => {
   const request = req.body

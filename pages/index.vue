@@ -115,6 +115,9 @@
           <v-col>
             <v-btn color="accent" to="/newrecipe">Add Recipe</v-btn>
           </v-col>
+          <v-col>
+            <user-list />
+          </v-col>
         </v-row>
       </v-container>
     </div>
@@ -122,11 +125,11 @@
 </template>
 
 <script>
-import Login from '~/components/Login.vue'
+import UserList from '~/components/UserList.vue'
 
 export default {
   components: {
-    Login,
+    UserList
   },
   data: () => ({
     headers: [
