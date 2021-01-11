@@ -1,5 +1,11 @@
 <template>
-  <login @loginSuccess="loginSuccess()" />
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6">
+        <login @loginSuccess="loginSuccess()" />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

@@ -184,7 +184,7 @@ export default {
       ingredient.done = next
       this.$set(this.recipe.ingredients, i, ingredient)
     },
-    ingredientStateChange(i, next) {
+    subIngredientStateChange(i, next) {
       let ingredient = {...this.recipe.subRecipe.ingredients[i]}
       ingredient.done = next
       this.$set(this.recipe.subRecipe.ingredients, i, ingredient)
