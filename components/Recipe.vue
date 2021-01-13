@@ -23,13 +23,22 @@
           mdi-checkbox-marked-outline
         </v-icon>
         <v-icon
-          v-else
+          v-else-if="i < 10"
           large
           :color="i % 2 === 0 ? `primary` : `accent`"
           light
           @click="ingredientStateChange(i, true)"
         >
           mdi-numeric-{{i + 1}}-box-outline
+        </v-icon>
+        <v-icon
+          v-else
+          large
+          :color="i % 2 === 0 ? `primary` : `accent`"
+          light
+          @click="ingredientStateChange(i, true)"
+        >
+          mdi-checkbox-blank-outline
         </v-icon>
       </v-col>
       <v-col cols="11" class="body-1">
@@ -57,7 +66,7 @@
           mdi-checkbox-marked-circle-outline
         </v-icon>
         <v-icon
-          v-else
+          v-else-if="i < 10"
           large
           :color="i % 2 === 0 ? `primary` : `accent`"
           light
@@ -65,6 +74,16 @@
         >
           <!-- class="mr-3" -->
           mdi-numeric-{{i + 1}}-circle
+        </v-icon>
+        <v-icon
+          v-else
+          large
+          :color="i % 2 === 0 ? `primary` : `accent`"
+          light
+          @click="directionStateChange(i, true)"
+        >
+          <!-- class="mr-3" -->
+          mdi-checkbox-blank-circle-outline
         </v-icon>
       </v-col>
       <v-col cols="11" class="body-1">
@@ -98,13 +117,22 @@
                 mdi-checkbox-marked-outline
               </v-icon>
               <v-icon
-                v-else
+                v-else-if="i < 10"
                 large
                 :color="i % 2 === 0 ? `primary` : `accent`"
                 light
                 @click="subIngredientStateChange(i, true)"
               >
                 mdi-numeric-{{i + 1}}-box-outline
+              </v-icon>
+              <v-icon
+                v-else
+                large
+                :color="i % 2 === 0 ? `primary` : `accent`"
+                light
+                @click="subIngredientStateChange(i, true)"
+              >
+                mdi-checkbox-blank-outline
               </v-icon>
             </v-col>
             <v-col cols="11" class="body-1">
@@ -132,7 +160,7 @@
                 mdi-checkbox-marked-circle-outline
               </v-icon>
               <v-icon
-                v-else
+                v-else-if="i < 10"
                 large
                 :color="i % 2 === 0 ? `primary` : `accent`"
                 light
@@ -140,6 +168,16 @@
               >
                 <!-- class="mr-3" -->
                 mdi-numeric-{{i + 1}}-circle
+              </v-icon>
+              <v-icon
+                v-else
+                large
+                :color="i % 2 === 0 ? `primary` : `accent`"
+                light
+                @click="subDirectionStateChange(i, true)"
+              >
+                <!-- class="mr-3" -->
+                mdi-checkbox-blank-circle-outline
               </v-icon>
             </v-col>
             <v-col cols="11" class="body-1">
