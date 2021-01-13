@@ -524,6 +524,15 @@ export default {
         directions: this.directions,
         notes: this.notes,
       }
+
+      if (this.sub) {
+        data.subRecipe = {
+          ingredients: this.subIngredients,
+          directions: this.subDirections,
+          name: this.subName
+        }
+      }
+
       this.$axios.$put(`/api/recipe/${this.id}`, data)
         .then(() => {
           this.$router.push('/')
