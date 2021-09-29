@@ -16,5 +16,6 @@ router.use('/recipe', require('./recipe'))
 router.use('/user', require('./user'))
 router.use('/tags', require('./tags'))
 router.use('/users', require('./users'))
+router.use('/password-reset', require('./password-reset'))
 
 module.exports = router;

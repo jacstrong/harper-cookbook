@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.10.3",
     "@nuxtjs/pwa": "^3.0.0-beta.20",
+    "@nuxtjs/vuetify": "^1.11.0",
     "cookie-parser": "^1.4.5",
     "cross-env": "^5.2.0",
     "crypto": "^1.0.1",
@@ -21,14 +22,15 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.12",
     "morgan": "^1.10.0",
+    "nodemailer": "^6.6.5",
     "nuxt": "^2.12.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "uuid": "^8.1.0",
-    "vue-quill-editor": "^3.0.6",
-    "@nuxtjs/vuetify": "^1.11.0"
+    "uuid": "^8.3.2",
+    "vue-quill-editor": "^3.0.6"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "nodemon": "^1.18.9"
   },
   "engines": {

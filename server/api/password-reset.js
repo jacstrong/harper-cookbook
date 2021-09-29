@@ -2,28 +2,9 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 const auth = require('../plugins/auth');
-// const email = require('../plugins/email');
 const UserSchema = mongoose.model('UserSchema');
-const PasswordConfSchema = mongoose.model('PasswordConfSchema');
 
-/**
- * @api {post} api/user/password/forgotpassword/
- * @apiName ForgotPasswordRequest
- * @apiGroup Password
- *
- * @apiParam {String} email email of user
- * @apiParamExample {json} Post-example:
- *  {
- *    email: String,
- *  }
- *
- * @apiSuccess {String} message Password successfully changed
- *
- * @apiDescription This is for submitting a request for a password change if someone has forgotten their password.
- * It will send an email if the specified email exists in the database otherwise it ignores the requset.
- */
-
-router.post('/forgotpassword', auth.optional, (req, res, next) => {
+router.post('/', auth.optional, (req, res, next) => {
   const reqEmail = req.body.email;
 
   if (!reqEmail) {
@@ -38,33 +19,11 @@ router.post('/forgotpassword', auth.optional, (req, res, next) => {
     if (err) return res.status(500).send();
     if (doc === null) return res.json({ message: 'request has been sent'});
 
-    const passReq = new PasswordConfSchema();
+    doc.passwordResetRequest();
 
-    passReq.userID = doc._id;
-    passReq.generated = new Date();
-
-    email.forgotPassword({ firstName: doc.firstName, confirmationID: passReq._id });
-
-    passReq.save();
     return res.json({ message: 'request has been sent' })
   })
 })
-
-/**
- * @api {post} api/user/password/forgotpassword/:id
- * @apiName ForgotPasswordSubmit
- * @apiGroup Password
- *
- * @apiParam {String} password password of user
- * @apiParamExample {json} Post-example:
- *  {
- *    password: String,
- *  }
- *
- * @apiSuccess {String} message Password successfully changed
- *
- * @apiDescription This route is for setting the password after getting the password reset email.
- */
 
 router.post('/forgotpassword/:id', auth.optional, (req, res, next) => {
   const id = req.params.id;

@@ -3,6 +3,9 @@
     <v-row justify="center">
       <v-col cols="12" sm="8" md="6">
         <login @loginSuccess="loginSuccess()" />
+        <v-card-text>
+          <NuxtLink to="/password-reset">Forgot Password?</NuxtLink>
+        </v-card-text>
       </v-col>
     </v-row>
   </v-container>

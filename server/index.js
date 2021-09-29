@@ -15,6 +15,8 @@ const isProduction = process.env.NODE_ENV === 'production';
 const config = require('../nuxt.config.js')
 config.dev = process.env.NODE_ENV !== 'production'
 
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 async function start () {
   // Init Nuxt.js
   const nuxt = new Nuxt(config)

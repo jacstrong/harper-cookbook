@@ -1,6 +1,18 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const { v4: uuidv4 } = require('uuid');
+//// Nodemailer Stuff, Rip me out!
+// TOTO
+const nodemailer = require('nodemailer');
+
+const mailTransporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+      user: 'ja.ha.strong@gmail.com',
+      pass: process.env.GMAIL_PASS
+  }
+});
 
 
 const UserSchema = mongoose.Schema({
@@ -12,7 +24,8 @@ const UserSchema = mongoose.Schema({
   name: { type: String, required: true },
   relation: { type: String },
   salt: { type: String, required: true },
-  role: { type: String, required: true, default: 'user', enum: ['user', 'admin', 'superadmin']}
+  role: { type: String, required: true, default: 'user', enum: ['user', 'admin', 'superadmin']},
+  reset_uuid: { type: String, required: false }
 })
 
 UserSchema.methods.setPassword = function (password) {
@@ -44,5 +57,30 @@ UserSchema.methods.toAuthJSON = function () {
     token: this.generateJWT()
   };
 }
+
+UserSchema.methods.passwordResetRequest = function () {
+  this.reset_uuid = uuidv4();
+
+  // This line runs async
+  this.save();
+
+  let mailDetails = {
+    from: 'ja.ha.strong@gmail.com',
+    to: this.email,
+    subject: 'Harper Cookbook Password Reset',
+    text: `Please follow this link to reset your password: https://harpercookbook.com/reset-password/${this.reset_uuid}`
+  };
+
+  mailTransporter.sendMail(mailDetails, function(err, data) {
+    if(err) {
+      console.log(process.env.GMAIL_PASS)
+      console.log(err)
+      console.log('Error Occurs');
+    } else {
+      console.log('Reset email sent successfully');
+    }
+  });
+}
+
 
 module.exports = mongoose.model('UserSchema', UserSchema);
