@@ -27,7 +27,14 @@
             </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-btn text color="primary">Create an Account</v-btn>
+            <NuxtLink v-slot="{ href, navigate }" to="/new-account" custom>
+              <v-btn
+                @click="navigate"
+                :href="href"
+                text
+                color="primary"
+              >Create an Account</v-btn>
+            </NuxtLink>
             <v-spacer></v-spacer>
             <v-btn text color="primary">Forgot Password</v-btn>
           </v-card-actions>

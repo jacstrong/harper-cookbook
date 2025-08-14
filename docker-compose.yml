@@ -1,15 +1,13 @@
-version: '3.8'
-
 services:
   mongodb:
-    image: mongo:4.2
+    image: mongo:8.0.12
     container_name: harper-cookbook-mongodb
     restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_ROOT_PASSWORD: example
       MONGO_INITDB_DATABASE: harper_cookbook
     volumes:
       - mongodb_data:/data/db

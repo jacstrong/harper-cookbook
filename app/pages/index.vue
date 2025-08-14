@@ -62,6 +62,8 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
+const { data } = await useFetch('/api/test')
+console.log('Data from API:', data.value)
 
 const recipes = ref([
   {

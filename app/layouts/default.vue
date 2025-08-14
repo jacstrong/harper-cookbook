@@ -10,8 +10,16 @@
         </v-app-bar-title>
       </NuxtLink>
       <v-spacer/>
-      <v-btn text>Recipes</v-btn>
-      <!-- <v-btn text>Memories</v-btn> Coming Soon-->
+      <NuxtLink v-slot="{ href, navigate, isActive }" to="/about" custom>
+        <v-btn :href="href" :variant="isActive ? 'tonal' : 'flat'" @click="navigate">
+          About
+        </v-btn>
+      </NuxtLink>
+      <NuxtLink v-slot="{ href, navigate, isActive }" to="/recipes" custom>
+        <v-btn :href="href" :variant="isActive ? 'tonal' : 'flat'" @click="navigate">
+          Recipes
+        </v-btn>
+      </NuxtLink>
       <NuxtLink v-slot="{ href, navigate, isActive }" to="/login" custom>
         <v-btn :href="href" :variant="isActive ? 'tonal' : 'flat'" @click="navigate">
           Login
