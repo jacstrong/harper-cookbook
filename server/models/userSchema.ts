@@ -1,10 +1,34 @@
-
-import mongoose from 'mongoose';
+import mongoose, { type Document } from 'mongoose';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 
+export interface INewUserParams {
+  email: string;
+  name: string;
+  password: string;
+  relation: string;
+}
 
-const UserSchema = mongoose.Schema({
+export interface IUserDocument extends Document {
+  email: string;
+  name: string;
+  active: boolean;
+  hash: string;
+  lastLogin: Date;
+  salt: string;
+  role: 'user' | 'admin' | 'superadmin';
+  relation?: string;
+  setPassword(password: string): void;
+  validatePassword(password: string): boolean;
+  generateJWT(): string;
+  toAuthJSON(): {
+    id: string;
+    email: string;
+    token: string;
+  };
+}
+
+const UserSchema = new mongoose.Schema<IUserDocument>({
   active: { type: Boolean, required: true, default: false},
   email: { type: String, required: [true, 'You must provide an email.'], unique: true },
   hash: { type: String, required: true },
@@ -15,12 +39,12 @@ const UserSchema = mongoose.Schema({
   role: { type: String, required: true, default: 'user', enum: ['user', 'admin', 'superadmin']}
 })
 
-UserSchema.methods.setPassword = function (password) {
+UserSchema.methods.setPassword = function (password: string) {
   this.salt = crypto.randomBytes(16).toString('hex');
   this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
 }
 
-UserSchema.methods.validatePassword = function (password) {
+UserSchema.methods.validatePassword = function (password: string) {
   const hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
   return this.hash === hash;
 }
@@ -34,7 +58,7 @@ UserSchema.methods.generateJWT = function () {
     name: this.name,
     id: this._id,
     role: this.role
-  }, process.env.NODE_ENV === 'development' ? 'secret' : process.env.SECRET, { expiresIn: '3d' }); // TODO: Set Secret
+  }, process.env.NODE_ENV === 'development' ? 'secret' : (process.env.SECRET || 'defaultSecret'), { expiresIn: '3d' });
 }
 
 UserSchema.methods.toAuthJSON = function () {
@@ -45,4 +69,4 @@ UserSchema.methods.toAuthJSON = function () {
   };
 }
 
-export default mongoose.model('UserSchema', UserSchema);
+export default mongoose.model<IUserDocument>('UserSchema', UserSchema);

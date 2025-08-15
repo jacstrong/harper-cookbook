@@ -49,6 +49,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useFetch } from '#app';
 
 const name = ref('');
 const relationship = ref('');
@@ -56,11 +57,33 @@ const email = ref('');
 const password = ref('');
 const confirmPassword = ref('');
 
-const createAccount = () => {
+const createAccount = async () => {
   if (password.value !== confirmPassword.value) {
     alert("Passwords do not match");
     return;
   }
-  // Call API to create account
-}
+
+  try {
+    const { error } = await useFetch('/api/user/new-user', {
+      method: 'POST',
+      body: {
+        name: name.value,
+        relation: relationship.value,
+        email: email.value,
+        password: password.value,
+      },
+    });
+
+    if (error.value) {
+      alert(`Error: ${error.value.data.message}`);
+      return;
+    }
+
+    alert('Account created successfully! Please wait for approval.');
+    // Optionally, redirect to login page
+  } catch (err) {
+    console.error(err);
+    alert('An unexpected error occurred. Please try again later.');
+  }
+};
 </script>
